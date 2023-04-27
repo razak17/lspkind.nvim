@@ -30,6 +30,15 @@ local kind_presets = {
     Event = "",
     Operator = "",
     TypeParameter = "",
+    Array = "",
+    Boolean = "",
+    Key = "",
+    Namespace = "",
+    Null = "",
+    Number = "",
+    Object = "",
+    Package = "",
+    String = "",
   },
   codicons = {
     Text = "",
@@ -40,7 +49,7 @@ local kind_presets = {
     Variable = "",
     Class = "",
     Interface = "",
-    Module = "",
+    Module = "",
     Property = "",
     Unit = "",
     Value = "",
@@ -49,14 +58,23 @@ local kind_presets = {
     Snippet = "",
     Color = "",
     File = "",
-    Reference = "",
+    Reference = "",
     Folder = "",
-    EnumMember = "",
+    EnumMember = "",
     Constant = "",
     Struct = "",
     Event = "",
     Operator = "",
     TypeParameter = "",
+    Array = "", -- 
+    Boolean = "",
+    Key = "", -- 
+    Namespace = "",
+    Null = "", -- ﳠ
+    Number = "", -- 
+    Object = "",
+    Package = "",
+    String = "",
   },
 }
 
@@ -86,6 +104,15 @@ local kind_order = {
   "Event",
   "Operator",
   "TypeParameter",
+  "Array",
+  "Boolean",
+  "Key",
+  "Namespace",
+  "Null",
+  "Number",
+  "Object",
+  "Package",
+  "String",
 }
 local kind_len = 25
 
