@@ -238,6 +238,7 @@ function lspkind.init(opts)
   end
 end
 
+lspkind.setup = lspkind.init
 lspkind.presets = kind_presets
 lspkind.symbol_map = kind_presets.default
 
@@ -269,18 +270,15 @@ function lspkind.cmp_format(opts)
     vim_item.kind = lspkind.symbolic(vim_item.kind, opts)
 
     if opts.menu ~= nil then
-      vim_item.menu = opts.menu[entry.source.name]
+      vim_item.menu = (opts.menu[entry.source.name] ~= nil and opts.menu[entry.source.name] or "")
+        .. ((opts.show_labelDetails and vim_item.menu ~= nil) and vim_item.menu or "")
     end
 
     if opts.maxwidth ~= nil then
-      if opts.ellipsis_char == nil then
-        vim_item.abbr = string.sub(vim_item.abbr, 1, opts.maxwidth)
-      else
-        local label = vim_item.abbr
-        local truncated_label = vim.fn.strcharpart(label, 0, opts.maxwidth)
-        if truncated_label ~= label then
-          vim_item.abbr = truncated_label .. opts.ellipsis_char
-        end
+      local maxwidth = type(opts.maxwidth) == "function" and opts.maxwidth() or opts.maxwidth
+      if vim.fn.strchars(vim_item.abbr) > maxwidth then
+        vim_item.abbr = vim.fn.strcharpart(vim_item.abbr, 0, maxwidth)
+          .. (opts.ellipsis_char ~= nil and opts.ellipsis_char or "")
       end
     end
     return vim_item
