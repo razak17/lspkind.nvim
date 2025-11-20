@@ -254,12 +254,27 @@ function lspkind.symbolic(kind, opts)
   return formatter(kind)
 end
 
+local function abbreviateString(str, maxwidth, ellipsis_char)
+  if vim.fn.strchars(str) > maxwidth then
+    str = vim.fn.strcharpart(str, 0, maxwidth) .. (ellipsis_char ~= nil and ellipsis_char or "")
+  end
+
+  return str
+end
+
 function lspkind.cmp_format(opts)
   if opts == nil then
     opts = {}
   end
   if opts.preset or opts.symbol_map then
     lspkind.init(opts)
+  end
+
+  if not opts.maxwidth or type(opts.maxwidth) == "number" or type(opts.maxwidth) == "function" then
+    opts.maxwidth = {
+      abbr = opts.maxwidth,
+      menu = opts.maxwidth,
+    }
   end
 
   return function(entry, vim_item)
@@ -274,13 +289,20 @@ function lspkind.cmp_format(opts)
         .. ((opts.show_labelDetails and vim_item.menu ~= nil) and vim_item.menu or "")
     end
 
-    if opts.maxwidth ~= nil then
-      local maxwidth = type(opts.maxwidth) == "function" and opts.maxwidth() or opts.maxwidth
-      if vim.fn.strchars(vim_item.abbr) > maxwidth then
-        vim_item.abbr = vim.fn.strcharpart(vim_item.abbr, 0, maxwidth)
-          .. (opts.ellipsis_char ~= nil and opts.ellipsis_char or "")
-      end
+    local ellipsis_char = opts.ellipsis_char
+
+    if opts.maxwidth.menu then
+      local maxwidth = opts.maxwidth.menu
+      maxwidth = type(maxwidth) == "function" and maxwidth() or maxwidth
+      vim_item.menu = abbreviateString(vim_item.menu, maxwidth, ellipsis_char)
     end
+
+    if opts.maxwidth.abbr then
+      local maxwidth = opts.maxwidth.abbr
+      maxwidth = type(maxwidth) == "function" and maxwidth() or maxwidth
+      vim_item.abbr = abbreviateString(vim_item.abbr, maxwidth, ellipsis_char)
+    end
+
     return vim_item
   end
 end
